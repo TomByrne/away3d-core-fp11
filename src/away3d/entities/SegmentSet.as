@@ -301,9 +301,10 @@
 			vertices[index++] = endB;
 			vertices[index++] = 1;
 			
+			subSet.indexBufferDirty = true;
 			subSet.vertexBufferDirty = true;
 			
-			_boundsInvalid = true;
+			invalidateBounds();
 		}
 		
 		arcane function get hasData():Boolean
@@ -337,6 +338,7 @@
 				subSet.vertexBuffer.uploadFromVector(subSet.vertices, 0, subSet.numVertices);
 				subSet.vertexBufferDirty = false;
 				subSet.vertexContext3D = stage3DProxy.context3D;
+				vertexBuffer = subSet.vertexBuffer;
 			}
 			
 			var context3d:Context3D = stage3DProxy._context3D;
