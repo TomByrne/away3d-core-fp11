@@ -278,6 +278,11 @@ package away3d.core.base
 			return _uvTransform;
 		}
 		
+		public function set uvTransform(value:Matrix):void
+		{
+			_uvTransform = value;
+		}
+		
 		private function updateUVTransform():void
 		{
 			_uvTransform ||= new Matrix();
