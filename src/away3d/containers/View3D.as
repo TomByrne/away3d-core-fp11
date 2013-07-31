@@ -171,11 +171,6 @@
 			
 			initHitField();
 			
-			_mouse3DManager = new Mouse3DManager();
-			
-			_touch3DManager = new Touch3DManager();
-			_touch3DManager.view = this;
-			
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.ADDED, onAdded, false, 0, true);
 			
@@ -825,11 +820,14 @@
 		
 		private function disposeTouch3DManager():void
 		{
-			_mouse3DManager.disableMouseListeners(_interactiveObject);
-			_mouse3DManager.dispose();
-			
-			_touch3DManager.disableTouchListeners(_interactiveObject);
-			_touch3DManager.dispose();
+			if (_mouse3DManager){
+				_mouse3DManager.disableMouseListeners(_interactiveObject);
+				_mouse3DManager.dispose();
+			}
+			if (_touch3DManager){
+				_touch3DManager.disableTouchListeners(_interactiveObject);
+				_touch3DManager.dispose();
+			}
 		}
 		
 		/**
@@ -955,6 +953,10 @@
 		
 		private function enableTouch3DManager():void 
 		{
+			_mouse3DManager = new Mouse3DManager();
+			_touch3DManager = new Touch3DManager();
+			_touch3DManager.view = this;
+			
 			if (_interactive) _mouse3DManager.enableMouseListeners(_interactiveObject);
 			if (_interactive) _touch3DManager.enableTouchListeners(_interactiveObject);
 		}
