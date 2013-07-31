@@ -8,6 +8,7 @@ package away3d.core.managers
 	import away3d.core.pick.PickingCollisionVO;
 	import away3d.core.pick.PickingType;
 	import away3d.events.TouchEvent3D;
+	import flash.display.DisplayObject;
 	
 	import flash.events.TouchEvent;
 	import flash.geom.Vector3D;
@@ -109,18 +110,18 @@ package away3d.core.managers
 			}
 		}
 		
-		public function enableTouchListeners(view:View3D):void
+		public function enableTouchListeners(interactiveObject:DisplayObject):void
 		{
-			view.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-			view.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-			view.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
+			interactiveObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
+			interactiveObject.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
+			interactiveObject.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
 		}
 		
-		public function disableTouchListeners(view:View3D):void
+		public function disableTouchListeners(interactiveObject:DisplayObject):void
 		{
-			view.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-			view.removeEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-			view.removeEventListener(TouchEvent.TOUCH_END, onTouchEnd);
+			interactiveObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
+			interactiveObject.removeEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
+			interactiveObject.removeEventListener(TouchEvent.TOUCH_END, onTouchEnd);
 		}
 		
 		public function dispose():void
@@ -185,7 +186,6 @@ package away3d.core.managers
 		
 		private function onTouchBegin(event:TouchEvent):void
 		{
-			
 			var touch:TouchPoint = new TouchPoint();
 			touch.id = event.touchPointID;
 			touch.x = event.stageX;
@@ -197,6 +197,7 @@ package away3d.core.managers
 			updateCollider(); // ensures collision check is done with correct mouse coordinates on mobile
 			
 			_collidingObject = _collidingObjectFromTouchId[ touch.id ];
+			
 			if (_collidingObject)
 				queueDispatch(TouchEvent3D.TOUCH_BEGIN, event, _collidingObject, touch);
 			
@@ -205,7 +206,6 @@ package away3d.core.managers
 		
 		private function onTouchMove(event:TouchEvent):void
 		{
-			
 			var touch:TouchPoint = _touchPointFromId[ event.touchPointID ];
 			touch.x = event.stageX;
 			touch.y = event.stageY;

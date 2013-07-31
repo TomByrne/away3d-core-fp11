@@ -7,6 +7,7 @@ package away3d.core.managers
 	import away3d.core.pick.PickingCollisionVO;
 	import away3d.core.pick.PickingType;
 	import away3d.events.MouseEvent3D;
+	import imag.masdar.core.Core;
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -162,28 +163,28 @@ package away3d.core.managers
 			_viewCount = _childDepth;
 		}
 		
-		public function enableMouseListeners(view:View3D):void
+		public function enableMouseListeners(interactiveObject:DisplayObject):void
 		{
-			view.addEventListener(MouseEvent.CLICK, onClick);
-			view.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
-			view.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			view.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			view.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			view.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-			view.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			view.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			interactiveObject.addEventListener(MouseEvent.CLICK, onClick);
+			interactiveObject.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
+			interactiveObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			interactiveObject.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			interactiveObject.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			interactiveObject.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+			interactiveObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			interactiveObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 		
-		public function disableMouseListeners(view:View3D):void
+		public function disableMouseListeners(interactiveObject:DisplayObject):void
 		{
-			view.removeEventListener(MouseEvent.CLICK, onClick);
-			view.removeEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
-			view.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			view.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			view.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			view.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-			view.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			view.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			interactiveObject.removeEventListener(MouseEvent.CLICK, onClick);
+			interactiveObject.removeEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
+			interactiveObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			interactiveObject.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			interactiveObject.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			interactiveObject.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+			interactiveObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			interactiveObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 		
 		public function dispose():void
@@ -202,8 +203,8 @@ package away3d.core.managers
 			event.altKey = sourceEvent.altKey;
 			event.shiftKey = sourceEvent.shiftKey;
 			event.delta = sourceEvent.delta;
-			event.screenX = sourceEvent.localX;
-			event.screenY = sourceEvent.localY;
+			event.screenX = sourceEvent.stageX; //sourceEvent.localX; 
+			event.screenY = sourceEvent.stageY; //sourceEvent.localY;
 			
 			collider ||= _collidingObject;
 			

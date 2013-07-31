@@ -3,6 +3,7 @@
 	
 	import away3d.core.managers.Touch3DManager;
 	import away3d.events.Scene3DEvent;
+	import flash.display.DisplayObject;
 	
 	import flash.display.Sprite;
 	import flash.display3D.Context3D;
@@ -95,6 +96,9 @@
 		private var _profile:String;
 		private var _layeredView:Boolean = false;
 		
+		private var _interactive:Boolean = true;
+		private var _interactiveObject:DisplayObject = DisplayObject(this);
+		
 		private function viewSource(e:ContextMenuEvent):void
 		{
 			var request:URLRequest = new URLRequest(_sourceURL);
@@ -147,7 +151,7 @@
 			contextMenu = _ViewContextMenu;
 		}
 		
-		public function View3D(scene:Scene3D = null, camera:Camera3D = null, renderer:RendererBase = null, forceSoftware:Boolean = false, profile:String = "baseline")
+		public function View3D(scene:Scene3D = null, camera:Camera3D = null, renderer:RendererBase = null, forceSoftware:Boolean = false, profile:String = "baseline", interactive:Boolean=true)
 		{
 			super();
 			_profile = profile;
@@ -157,6 +161,7 @@
 			_renderer = renderer || new DefaultRenderer();
 			_depthRenderer = new DepthRenderer();
 			_forceSoftware = forceSoftware;
+			_interactive = interactive;
 			
 			// todo: entity collector should be defined by renderer
 			_entityCollector = _renderer.createEntityCollector();
@@ -167,11 +172,9 @@
 			initHitField();
 			
 			_mouse3DManager = new Mouse3DManager();
-			_mouse3DManager.enableMouseListeners(this);
 			
 			_touch3DManager = new Touch3DManager();
 			_touch3DManager.view = this;
-			_touch3DManager.enableTouchListeners(this);
 			
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.ADDED, onAdded, false, 0, true);
@@ -693,10 +696,11 @@
 			if (!_shareContext) {
 				stage3DProxy.present();
 				
+			} // usually mouse and touch events are only fired if the context isn't shared to prevent events being fired in both away3d and starling
 				// fire collected mouse events
 				_mouse3DManager.fireMouseEvents();
 				_touch3DManager.fireTouchEvents();
-			}
+			//}
 			
 			// clean up data for this render
 			_entityCollector.cleanUp();
@@ -807,11 +811,7 @@
 			if (_rttBufferManager)
 				_rttBufferManager.dispose();
 			
-			_mouse3DManager.disableMouseListeners(this);
-			_mouse3DManager.dispose();
-			
-			_touch3DManager.disableTouchListeners(this);
-			_touch3DManager.dispose();
+			disposeTouch3DManager();
 			
 			_rttBufferManager = null;
 			_depthRender = null;
@@ -821,6 +821,15 @@
 			_stage3DProxy = null;
 			_renderer = null;
 			_entityCollector = null;
+		}
+		
+		private function disposeTouch3DManager():void
+		{
+			_mouse3DManager.disableMouseListeners(_interactiveObject);
+			_mouse3DManager.dispose();
+			
+			_touch3DManager.disableTouchListeners(_interactiveObject);
+			_touch3DManager.dispose();
 		}
 		
 		/**
@@ -916,6 +925,8 @@
 			
 			_addedToStage = true;
 			
+			enableTouch3DManager();
+			
 			if (!_stage3DProxy) {
 				_stage3DProxy = Stage3DManager.getInstance(stage).getFreeStage3DProxy(_forceSoftware, _profile);
 				_stage3DProxy.addEventListener(Stage3DEvent.VIEWPORT_UPDATED, onViewportUpdated);
@@ -940,6 +951,12 @@
 			
 			if (_shareContext)
 				_mouse3DManager.addViewLayer(this);
+		}
+		
+		private function enableTouch3DManager():void 
+		{
+			if (_interactive) _mouse3DManager.enableMouseListeners(_interactiveObject);
+			if (_interactive) _touch3DManager.enableTouchListeners(_interactiveObject);
 		}
 		
 		private function onAdded(event:Event):void
@@ -996,6 +1013,16 @@
 		
 		override public function set scaleY(value:Number):void
 		{
+		}
+		
+		public function set interactiveObject(value:DisplayObject):void 
+		{
+			if (_interactiveObject != value) {
+				_interactiveObject = value;
+				disposeTouch3DManager();
+				enableTouch3DManager();
+				
+			}
 		}
 	}
 }
