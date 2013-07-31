@@ -146,6 +146,12 @@ package away3d.events
 
         /** The y-position of the touch in stage coordinates. */
         public function get globalY():Number { return mGlobalY; }
+		
+		/** The x-position of the touch in stage coordinates. */
+        public function set globalX(value:Number):void { mGlobalX = value; }
+
+        /** The y-position of the touch in stage coordinates. */
+        public function set globalY(value:Number):void { mGlobalY = value; }
         
         /** The previous x-position of the touch in stage coordinates. */
         public function get previousGlobalX():Number { return mPreviousGlobalX; }

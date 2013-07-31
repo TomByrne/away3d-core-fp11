@@ -1023,7 +1023,6 @@
 				_interactiveObject = value;
 				disposeTouch3DManager();
 				enableTouch3DManager();
-				
 			}
 		}
 	}
