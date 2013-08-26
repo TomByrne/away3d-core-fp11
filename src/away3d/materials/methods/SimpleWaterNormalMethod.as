@@ -2,6 +2,7 @@ package away3d.materials.methods
 {
 	import away3d.arcane;
 	import away3d.core.managers.Stage3DProxy;
+	import away3d.debug.Debug;
 	import away3d.materials.compilation.ShaderRegisterCache;
 	import away3d.materials.compilation.ShaderRegisterElement;
 	import away3d.textures.Texture2DBase;
@@ -20,6 +21,11 @@ package away3d.materials.methods
 		private var _water1OffsetY:Number = 0;
 		private var _water2OffsetX:Number = 0;
 		private var _water2OffsetY:Number = 0;
+		
+		public var water1ScaleX:Number = 1;
+		public var water1ScaleY:Number = 1;
+		public var water2ScaleX:Number = 1;
+		public var water2ScaleY:Number = 1;
 
 		/**
 		 * Creates a new SimpleWaterNormalMethod object.
@@ -163,6 +169,11 @@ package away3d.materials.methods
 			data[index + 6] = _water2OffsetX;
 			data[index + 7] = _water2OffsetY;
 			
+			data[index + 8] = water1ScaleX;
+			data[index + 9] = water1ScaleY;
+			data[index + 10] = water2ScaleX;
+			data[index + 11] = water2ScaleY;
+			
 			if (_useSecondNormalMap >= 0)
 				stage3DProxy._context3D.setTextureAt(vo.texturesIndex + 1, _texture2.getTextureForStage3D(stage3DProxy));
 		}
@@ -175,14 +186,17 @@ package away3d.materials.methods
 			var temp:ShaderRegisterElement = regCache.getFreeFragmentVectorTemp();
 			var dataReg:ShaderRegisterElement = regCache.getFreeFragmentConstant();
 			var dataReg2:ShaderRegisterElement = regCache.getFreeFragmentConstant();
+			var dataReg3:ShaderRegisterElement = regCache.getFreeFragmentConstant();
 			_normalTextureRegister = regCache.getFreeTextureReg();
 			_normalTextureRegister2 = _useSecondNormalMap? regCache.getFreeTextureReg() : _normalTextureRegister;
 			vo.texturesIndex = _normalTextureRegister.index;
 			
-			vo.fragmentConstantsIndex = dataReg.index*4;
+			vo.fragmentConstantsIndex = dataReg.index * 4;
 			return "add " + temp + ", " + _sharedRegisters.uvVarying + ", " + dataReg2 + ".xyxy\n" +
+				"mul " + temp + ", " + temp + ", " + dataReg3 + ".xyxy\n" +
 				getTex2DSampleCode(vo, targetReg, _normalTextureRegister, normalMap, temp) +
 				"add " + temp + ", " + _sharedRegisters.uvVarying + ", " + dataReg2 + ".zwzw\n" +
+				"mul " + temp + ", " + temp + ", " + dataReg3 + ".zwzw\n" +
 				getTex2DSampleCode(vo, temp, _normalTextureRegister2, _texture2, temp) +
 				"add " + targetReg + ", " + targetReg + ", " + temp + "		\n" +
 				"mul " + targetReg + ", " + targetReg + ", " + dataReg + ".x	\n" +
