@@ -16,9 +16,11 @@ package away3d.primitives.data
 		arcane var _startR:Number;
 		arcane var _startG:Number;
 		arcane var _startB:Number;
+		arcane var _startA:Number;
 		arcane var _endR:Number;
 		arcane var _endG:Number;
 		arcane var _endB:Number;
+		arcane var _endA:Number;
 		
 		private var _index:int = -1;
 		private var _subSetIndex:int = -1;
@@ -108,6 +110,7 @@ package away3d.primitives.data
 		
 		public function set startColor(color:uint):void
 		{
+			_startA = ( ( color >> 24 ) & 0xff )/255;
 			_startR = ( ( color >> 16 ) & 0xff )/255;
 			_startG = ( ( color >> 8 ) & 0xff )/255;
 			_startB = ( color & 0xff )/255;
@@ -127,6 +130,7 @@ package away3d.primitives.data
 		
 		public function set endColor(color:uint):void
 		{
+			_endA = ( ( color >> 24 ) & 0xff )/255;
 			_endR = ( ( color >> 16 ) & 0xff )/255;
 			_endG = ( ( color >> 8 ) & 0xff )/255;
 			_endB = ( color & 0xff )/255;

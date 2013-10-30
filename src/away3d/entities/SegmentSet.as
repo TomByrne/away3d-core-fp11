@@ -14,6 +14,7 @@
 	import away3d.primitives.LineSegment;
 	import away3d.primitives.data.Segment;
 	import away3d.library.assets.AssetType;
+	import flash.display3D.Context3DBlendFactor;
 	
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DVertexBufferFormat;
@@ -245,8 +246,14 @@
 			var end:Vector3D = segment._end;
 			var startX:Number = start.x, startY:Number = start.y, startZ:Number = start.z;
 			var endX:Number = end.x, endY:Number = end.y, endZ:Number = end.z;
-			var startR:Number = segment._startR, startG:Number = segment._startG, startB:Number = segment._startB;
-			var endR:Number = segment._endR, endG:Number = segment._endG, endB:Number = segment._endB;
+			var startR:Number = segment._startR;
+			var startG:Number = segment._startG;
+			var startB:Number = segment._startB;
+			var startA:Number = segment._startA;
+			var endR:Number = segment._endR;
+			var endG:Number = segment._endG;
+			var endB:Number = segment._endB;
+			var endA:Number = segment._endA;
 			var index:uint = segment.index;
 			var t:Number = segment.thickness;
 			
@@ -263,7 +270,7 @@
 			vertices[index++] = startR;
 			vertices[index++] = startG;
 			vertices[index++] = startB;
-			vertices[index++] = 1;
+			vertices[index++] = startA;
 			
 			vertices[index++] = endX;
 			vertices[index++] = endY;
@@ -275,7 +282,7 @@
 			vertices[index++] = endR;
 			vertices[index++] = endG;
 			vertices[index++] = endB;
-			vertices[index++] = 1;
+			vertices[index++] = endA;
 			
 			vertices[index++] = startX;
 			vertices[index++] = startY;
@@ -287,7 +294,7 @@
 			vertices[index++] = startR;
 			vertices[index++] = startG;
 			vertices[index++] = startB;
-			vertices[index++] = 1;
+			vertices[index++] = startA;
 			
 			vertices[index++] = endX;
 			vertices[index++] = endY;
@@ -299,7 +306,7 @@
 			vertices[index++] = endR;
 			vertices[index++] = endG;
 			vertices[index++] = endB;
-			vertices[index++] = 1;
+			vertices[index++] = endA;
 			
 			subSet.indexBufferDirty = true;
 			subSet.vertexBufferDirty = true;
@@ -346,6 +353,7 @@
 			context3d.setVertexBufferAt(1, vertexBuffer, 3, Context3DVertexBufferFormat.FLOAT_3);
 			context3d.setVertexBufferAt(2, vertexBuffer, 6, Context3DVertexBufferFormat.FLOAT_1);
 			context3d.setVertexBufferAt(3, vertexBuffer, 7, Context3DVertexBufferFormat.FLOAT_4);
+			context3d.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
 		}
 		
 		public function activateUVBuffer(index:int, stage3DProxy:Stage3DProxy):void

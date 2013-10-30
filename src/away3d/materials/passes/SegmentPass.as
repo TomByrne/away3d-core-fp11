@@ -4,6 +4,7 @@
 	import away3d.cameras.Camera3D;
 	import away3d.core.base.IRenderable;
 	import away3d.core.managers.Stage3DProxy;
+	import away3d.debug.Debug;
 	import away3d.entities.SegmentSet;
 	
 	import flash.display3D.Context3D;
@@ -20,9 +21,11 @@
 		protected static const ONE_VECTOR:Vector.<Number> = Vector.<Number>([ 1, 1, 1, 1 ]);
 		protected static const FRONT_VECTOR:Vector.<Number> = Vector.<Number>([ 0, 0, -1, 0 ]);
 		
-		private var _constants:Vector.<Number> = new Vector.<Number>(4, true);
+		private var fragmentData:Vector.<Number> = new Vector.<Number>(4);
 		private var _calcMatrix:Matrix3D;
 		private var _thickness:Number;
+		
+		private var _constants:Vector.<Number> = new Vector.<Number>(4, true);
 		
 		/**
 		 * Creates a new SegmentPass object.
@@ -35,6 +38,11 @@
 			
 			_thickness = thickness;
 			_constants[1] = 1/255;
+			
+			fragmentData[0] = 0;
+			fragmentData[1] = 0;
+			fragmentData[2] = 0;
+			fragmentData[3] = 0;
 			
 			super();
 		}
@@ -111,6 +119,16 @@
 		arcane override function getFragmentCode(animationCode:String):String
 		{
 			return "mov oc, v0\n";
+			
+			/*Debug.active = true;
+			
+			var code:String = "// Test \n";
+			code += "mov ft0, v0\n";
+			code += "mov ft0.zw, fc0.xx\n";
+			code += "mov oc, ft0\n";
+			
+			
+			return code*/
 		}
 		
 		/**
@@ -153,6 +171,7 @@
 			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 5, ONE_VECTOR);
 			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 6, FRONT_VECTOR);
 			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 7, _constants);
+			context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, fragmentData, 1);
 			
 			// projection matrix
 			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, camera.lens.matrix, true);
