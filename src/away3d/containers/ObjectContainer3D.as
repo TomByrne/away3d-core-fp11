@@ -640,6 +640,17 @@ package away3d.containers
 			return _children[index];
 		}
 		
+		public function getChildByName(name:String):ObjectContainer3D
+		{
+			for (var i:int = 0; i < this.numChildren; i++) 
+			{
+				var child:ObjectContainer3D = getChildAt(i);
+				if (child.name == name) return child;
+			}
+			return null;
+		}
+		
+		
 		/**
 		 * The amount of child objects of the ObjectContainer3D.
 		 */
