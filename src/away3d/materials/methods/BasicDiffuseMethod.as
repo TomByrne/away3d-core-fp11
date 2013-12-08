@@ -282,6 +282,7 @@ package away3d.materials.methods
 				_diffuseInputRegister = regCache.getFreeTextureReg();
 				vo.texturesIndex = _diffuseInputRegister.index;
 				code += getTex2DSampleCode(vo, albedo, _diffuseInputRegister, _texture);
+				
 				if (_alphaThreshold > 0) {
 					cutOffReg = regCache.getFreeFragmentConstant();
 					vo.fragmentConstantsIndex = cutOffReg.index*4;

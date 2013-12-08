@@ -7,7 +7,6 @@ package away3d.core.managers
 	import away3d.core.pick.PickingCollisionVO;
 	import away3d.core.pick.PickingType;
 	import away3d.events.MouseEvent3D;
-	import imag.masdar.core.Core;
 	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
