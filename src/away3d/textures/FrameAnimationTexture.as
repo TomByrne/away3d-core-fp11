@@ -8,8 +8,8 @@ package away3d.textures
 	import flash.geom.Rectangle;
 	import flash.net.registerClassAlias;
 	import flash.utils.ByteArray;
-	import imag.masdar.experience.control.ATFVideoObject;
-	import imag.masdar.experience.control.Placement;
+	import imag.masdar.core.control.ATFVideoObject;
+	import imag.masdar.core.control.Placement;
 	
 	/**
 	 * ...
@@ -30,9 +30,9 @@ package away3d.textures
 		
 		public static function fromPackagedByteArray(data:ByteArray, generateMipmaps:Boolean=false):FrameAnimationTexture
 		{
-			registerClassAlias("imag.masdar.experience.control.ATFVideoObject", ATFVideoObject);
+			registerClassAlias("imag.masdar.core.control.ATFVideoObject", ATFVideoObject);
+			registerClassAlias("imag.masdar.core.control.Placement", Placement);
 			registerClassAlias("flash.utils.ByteArray", ByteArray);
-			registerClassAlias("imag.masdar.experience.control.Placement", Placement);
 			registerClassAlias("flash.geom.Point", Point);
 			registerClassAlias("flash.geom.Rectangle", Rectangle);
 			

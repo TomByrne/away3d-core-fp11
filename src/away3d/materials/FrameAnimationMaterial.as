@@ -10,7 +10,7 @@ package away3d.materials
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.ByteArray;
-	import imag.masdar.experience.control.Placement;
+	import imag.masdar.core.control.Placement;
 	
 	/**
 	 * ...
