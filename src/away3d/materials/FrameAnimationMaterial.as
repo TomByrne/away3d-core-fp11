@@ -114,5 +114,12 @@ package away3d.materials
 		{
 			return frameAnimationTexture.totalFrames;
 		}
+		
+		override public function dispose():void
+		{
+			frameAnimationMethod.dispose();
+			frameAnimationMethod = null;
+			super.dispose();
+		}
 	}
 }

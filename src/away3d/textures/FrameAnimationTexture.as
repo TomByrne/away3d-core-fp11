@@ -28,42 +28,55 @@ package away3d.textures
 		public var animationWidth:int = 0;
 		public var animationHeight:int = 0;
 		
-		public static function fromPackagedByteArray(data:ByteArray, generateMipmaps:Boolean=false):FrameAnimationTexture
+		public var atfVideoObject:ATFVideoObject;
+		public var uncompressCount:Vector.<Boolean>;
+		
+		public static function fromPackagedByteArray(atfVideoObject:ATFVideoObject, generateMipmaps:Boolean=false):FrameAnimationTexture
 		{
-			registerClassAlias("imag.masdar.core.control.ATFVideoObject", ATFVideoObject);
-			registerClassAlias("imag.masdar.core.control.Placement", Placement);
-			registerClassAlias("flash.utils.ByteArray", ByteArray);
-			registerClassAlias("flash.geom.Point", Point);
-			registerClassAlias("flash.geom.Rectangle", Rectangle);
-			
-			trace("data == null: " + Boolean(data == null));
-			data.position = 0;
-			var atfVideoObject:ATFVideoObject = ATFVideoObject(data.readObject());
+			trace("fromPackagedByteArray");
 			
 			var placements:Vector.<Placement> = atfVideoObject.placements;
 			var totalFrames:int = placements.length;
 			var numTextures:int  = atfVideoObject.atfTextures.length;
 			var animationWidth:int = atfVideoObject.originalWidth;
 			var animationHeight:int = atfVideoObject.originalHeight;
-			var bitmapdatas:Vector.<BitmapData> = new Vector.<BitmapData>(numTextures);
+			//var bitmapdatas:Vector.<BitmapData> = new Vector.<BitmapData>(numTextures);
+			var uncompressCount:Vector.<Boolean> = new Vector.<Boolean>();
 			
-			for (var i:int = 0; i < numTextures; ++i) {
-				var data:ByteArray = atfVideoObject.atfTextures[i];
-				data.position = 0;
-				data.uncompress();
-				var _width:int = atfVideoObject.textureRects[i].width;
-				var _height:int = atfVideoObject.textureRects[i].height;
-				var bmd:BitmapData = new BitmapData(_width, _height, true, 0x55FF0000); // 24 bit bitmap
-				bmd.setPixels(bmd.rect, data); // position of data is now at 5th byte				
-				bitmapdatas[i] = bmd;
+			for (var i:int = 0; i < atfVideoObject.atfTextures.length; i++) 
+			{
+				if (i == 0) {
+					atfVideoObject.atfTextures[i].position = 0;
+					atfVideoObject.atfTextures[i].uncompress();
+					uncompressCount[i] = true;
+					var _width:int = atfVideoObject.textureRects[0].width;
+					var _height:int = atfVideoObject.textureRects[0].height;
+					var bmd:BitmapData = new BitmapData(_width, _height, true, 0x55FF0000); // 24 bit bitmap
+					bmd.setPixels(bmd.rect, atfVideoObject.atfTextures[i]); // position of subData is now at 5th byte
+				}
+				else {
+					uncompressCount[i] = false;
+				}
 			}
 			
-			var frameAnimationTexture:FrameAnimationTexture = new FrameAnimationTexture(bitmapdatas, generateMipmaps);
+			
+			
+			var frameAnimationTexture:FrameAnimationTexture = new FrameAnimationTexture(new <BitmapData>[bmd], generateMipmaps);
 			frameAnimationTexture.placements = placements;
 			frameAnimationTexture.totalFrames = totalFrames;
 			frameAnimationTexture.numTextures = numTextures;
 			frameAnimationTexture.animationWidth = animationWidth;
 			frameAnimationTexture.animationHeight = animationHeight;
+			frameAnimationTexture.atfVideoObject = atfVideoObject;
+			frameAnimationTexture.uncompressCount = uncompressCount;
+			
+			//bmd = null;
+			atfVideoObject = null;
+			//data = null;
+			placements = null;
+			uncompressCount = null;
+			
+			
 			return frameAnimationTexture;
 		}
 		
@@ -106,13 +119,46 @@ package away3d.textures
 		
 		public function updateTexture(textureIndex:int):void 
 		{
-			this.bitmapData = bmds[textureIndex];
+			if (textureIndex < bmds.length) {
+				this.bitmapData = bmds[textureIndex];
+			}
+			else {
+				//if (this.bitmapData){
+					//this.bitmapData.dispose();
+					//this.bitmapData = null;
+				//}
+				this.bitmapData = updateBmd(textureIndex);
+			}
+		}
+		
+		private var currentTextureIndex:int = -1;
+		private var currentByteArray:ByteArray;
+		private function updateBmd(textureIndex:int):BitmapData 
+		{
+			if (currentTextureIndex == textureIndex) return this.bitmapData;
+			currentTextureIndex = textureIndex;
+			
+			currentByteArray = atfVideoObject.atfTextures[textureIndex];
+			currentByteArray.position = 0;
+			if (!uncompressCount[textureIndex]) {
+				uncompressCount[textureIndex] = true;
+				currentByteArray.uncompress();
+			}
+			
+			var _width:int = atfVideoObject.textureRects[textureIndex].width;
+			var _height:int = atfVideoObject.textureRects[textureIndex].height;
+			var bmd:BitmapData = new BitmapData(_width, _height, true, 0x55FF0000); // 24 bit bitmap
+			bmd.setPixels(bmd.rect, currentByteArray); // position of data is now at 5th byte
+			return bmd;
 		}
 		
 		override public function dispose():void
 		{
+			super.dispose();
+			var i:int;
+			
 			if (bmds){
-				for (var i:int = 0; i < bmds.length; ++i) {
+				for (i = 0; i < bmds.length; ++i) {
 					bmds[i].dispose();
 					bmds[i] = null;
 				}
@@ -120,9 +166,8 @@ package away3d.textures
 			}
 			if (this.bitmapData){
 				this.bitmapData.dispose();
-				this.bitmapData = null;
+				//this.bitmapData = null;
 			}
-			super.dispose();
 		}
 	}
 }
