@@ -18,7 +18,7 @@ package away3d.animators.states
 	
 	/**
 	 * ...
-	 * @author ...
+	 * @author P.J.Shand
 	 */
 	public class ParticlePositionState extends ParticleStateBase
 	{

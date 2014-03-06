@@ -20,7 +20,7 @@ package away3d.animators.states
 	
 	/**
 	 * ...
-	 * @author ...
+	 * @author P.J.Shand
 	 */
 	public class ParticleColorState extends ParticleStateBase
 	{
