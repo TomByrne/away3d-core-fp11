@@ -1,4 +1,4 @@
-﻿package away3d.entities
+package away3d.entities
 {
 	import away3d.arcane;
 	import away3d.animators.IAnimator;
@@ -14,6 +14,7 @@
 	import away3d.primitives.LineSegment;
 	import away3d.primitives.data.Segment;
 	import away3d.library.assets.AssetType;
+	import flash.display.BlendMode;
 	
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DVertexBufferFormat;
@@ -53,6 +54,7 @@
 			
 			_segments = new Dictionary();
 			material = new SegmentMaterial();
+			material.blendMode = BlendMode.LAYER;
 		}
 		
 		/**
@@ -248,7 +250,10 @@
 			var startR:Number = segment._startR, startG:Number = segment._startG, startB:Number = segment._startB;
 			var endR:Number = segment._endR, endG:Number = segment._endG, endB:Number = segment._endB;
 			var index:uint = segment.index;
-			var t:Number = segment.thickness;
+			var st:Number = segment.startThickness;
+			var et:Number = segment.endThickness;
+			var sa:Number = segment.startAlpha;
+			var ea:Number = segment.endAlpha;
 			
 			var subSet:SubSet = _subSets[segment.subSetIndex];
 			var vertices:Vector.<Number> = subSet.vertices;
@@ -259,11 +264,11 @@
 			vertices[index++] = endX;
 			vertices[index++] = endY;
 			vertices[index++] = endZ;
-			vertices[index++] = t;
+			vertices[index++] = st;
 			vertices[index++] = startR;
 			vertices[index++] = startG;
 			vertices[index++] = startB;
-			vertices[index++] = 1;
+			vertices[index++] = sa;
 			
 			vertices[index++] = endX;
 			vertices[index++] = endY;
@@ -271,11 +276,11 @@
 			vertices[index++] = startX;
 			vertices[index++] = startY;
 			vertices[index++] = startZ;
-			vertices[index++] = -t;
+			vertices[index++] = -et;
 			vertices[index++] = endR;
 			vertices[index++] = endG;
 			vertices[index++] = endB;
-			vertices[index++] = 1;
+			vertices[index++] = ea;
 			
 			vertices[index++] = startX;
 			vertices[index++] = startY;
@@ -283,11 +288,11 @@
 			vertices[index++] = endX;
 			vertices[index++] = endY;
 			vertices[index++] = endZ;
-			vertices[index++] = -t;
+			vertices[index++] = -st;
 			vertices[index++] = startR;
 			vertices[index++] = startG;
 			vertices[index++] = startB;
-			vertices[index++] = 1;
+			vertices[index++] = sa;
 			
 			vertices[index++] = endX;
 			vertices[index++] = endY;
@@ -295,11 +300,11 @@
 			vertices[index++] = startX;
 			vertices[index++] = startY;
 			vertices[index++] = startZ;
-			vertices[index++] = t;
+			vertices[index++] = et;
 			vertices[index++] = endR;
 			vertices[index++] = endG;
 			vertices[index++] = endB;
-			vertices[index++] = 1;
+			vertices[index++] = ea;
 			
 			subSet.vertexBufferDirty = true;
 			

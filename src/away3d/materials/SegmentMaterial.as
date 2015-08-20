@@ -2,6 +2,7 @@ package away3d.materials
 {
 	import away3d.arcane;
 	import away3d.materials.passes.SegmentPass;
+	import flash.display.BlendMode;
 	
 	use namespace arcane;
 	
@@ -26,6 +27,13 @@ package away3d.materials
 			bothSides = true;
 			addPass(_screenPass = new SegmentPass(thickness));
 			_screenPass.material = this;
+			blendMode = BlendMode.NORMAL;
+		}
+		
+		override public function set blendMode(value:String):void
+		{
+			super.blendMode = value;
+			_screenPass.setBlendMode(value);
 		}
 	}
 }

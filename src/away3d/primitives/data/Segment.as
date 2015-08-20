@@ -10,7 +10,8 @@ package away3d.primitives.data
 	public class Segment
 	{
 		arcane var _segmentsBase:SegmentSet;
-		arcane var _thickness:Number;
+		arcane var _startThickness:Number;
+		arcane var _endThickness:Number;
 		arcane var _start:Vector3D;
 		arcane var _end:Vector3D;
 		arcane var _startR:Number;
@@ -24,13 +25,16 @@ package away3d.primitives.data
 		private var _subSetIndex:int = -1;
 		private var _startColor:uint;
 		private var _endColor:uint;
+		private var _startAlpha:Number;
+		private var _endAlpha:Number;
 		
 		public function Segment(start:Vector3D, end:Vector3D, anchor:Vector3D, colorStart:uint = 0x333333, colorEnd:uint = 0x333333, thickness:Number = 1):void
 		{
 			// TODO: not yet used: for CurveSegment support
 			anchor = null;
 			
-			_thickness = thickness*.5;
+			_startThickness = thickness*.5;
+			_endThickness = thickness*.5;
 			// TODO: add support for curve using anchor v1
 			// Prefer removing v1 from this, and make Curve a separate class extending Segment? (- David)
 			_start = start;
@@ -39,7 +43,7 @@ package away3d.primitives.data
 			endColor = colorEnd;
 		}
 		
-		public function updateSegment(start:Vector3D, end:Vector3D, anchor:Vector3D, colorStart:uint = 0x333333, colorEnd:uint = 0x333333, thickness:Number = 1):void
+		public function updateSegment(start:Vector3D, end:Vector3D, anchor:Vector3D, colorStart:uint = 0x333333, colorEnd:uint = 0x333333, startThickness:Number = 1, endThickness:Number=NaN):void
 		{
 			// TODO: not yet used: for CurveSegment support
 			anchor = null;
@@ -52,7 +56,8 @@ package away3d.primitives.data
 			if (_endColor != colorEnd)
 				endColor = colorEnd;
 			
-			_thickness = thickness*.5;
+			_startThickness = startThickness*.5;
+			_endThickness = (isNaN(endThickness) ? startThickness : endThickness) *.5;
 			update();
 		}
 		
@@ -84,17 +89,37 @@ package away3d.primitives.data
 			update();
 		}
 		
-		/**
-		 * Defines the ending vertex.
-		 */
 		public function get thickness():Number
 		{
-			return _thickness*2;
+			return _startThickness*2;
 		}
 		
 		public function set thickness(value:Number):void
 		{
-			_thickness = value*.5;
+			_startThickness = value*.5;
+			_endThickness = value*.5;
+			update();
+		}
+		
+		public function get startThickness():Number
+		{
+			return _startThickness*2;
+		}
+		
+		public function set startThickness(value:Number):void
+		{
+			_startThickness = value*.5;
+			update();
+		}
+		
+		public function get endThickness():Number
+		{
+			return _endThickness*2;
+		}
+		
+		public function set endThickness(value:Number):void
+		{
+			_endThickness = value*.5;
 			update();
 		}
 		
@@ -132,6 +157,30 @@ package away3d.primitives.data
 			_endB = ( color & 0xff )/255;
 			
 			_endColor = color;
+			
+			update();
+		}
+		
+		public function get startAlpha():Number
+		{
+			return _startAlpha;
+		}
+		
+		public function set startAlpha(value:Number):void
+		{
+			_startAlpha = value;
+			
+			update();
+		}
+		
+		public function get endAlpha():Number
+		{
+			return _endAlpha;
+		}
+		
+		public function set endAlpha(value:Number):void
+		{
+			_endAlpha = value;
 			
 			update();
 		}
