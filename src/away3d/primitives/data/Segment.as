@@ -43,12 +43,15 @@ package away3d.primitives.data
 			endColor = colorEnd;
 		}
 		
-		public function updateSegment(start:Vector3D, end:Vector3D, anchor:Vector3D, colorStart:uint = 0x333333, colorEnd:uint = 0x333333, startThickness:Number = 1, endThickness:Number=NaN):void
+		public function updateSegment(start:Vector3D, end:Vector3D, anchor:Vector3D, colorStart:uint = 0x333333, colorEnd:uint = 0x333333, startThickness:Number = 1, endThickness:Number = NaN, alphaStart:Number = 1, alphaEnd:Number = 1):void
 		{
 			// TODO: not yet used: for CurveSegment support
 			anchor = null;
 			_start = start;
 			_end = end;
+			
+			_startAlpha = alphaStart;
+			_endAlpha = alphaEnd;
 			
 			if (_startColor != colorStart)
 				startColor = colorStart;
